@@ -1,65 +1,52 @@
-# ResultHub Web Frontend
+# ResultHub Business & Admin Web
 
-This repository contains the web-based frontend application for the ResultHub platform. It is a modern, responsive web application designed for high performance and excellent user experience.
+This repository contains the enterprise-facing application strictly reserved for ResultHub Organizations and internal Super Admins.
 
-## 🚀 Technology Stack
+## 🎯 Purpose
+The Business Web platform completely separates enterprise workloads from consumer workloads. It provides high-security dashboards where organizations can manage their internal structures, upload datasets, and monitor analytics. It also houses the `superadmin` portal for internal system moderation.
 
-- **Framework:** Next.js (App Router)
-- **Library:** React
-- **Styling:** Tailwind CSS
+## 📦 What It Has
+- **Organization Dashboards:** Complex UI flows for organization data management and CSV imports.
+- **Super Admin Moderation:** Tools for handling user complaints, reviewing flagged posts, and managing platform-wide settings.
+- **Analytics & Reporting:** Built-in charts and graphs using Recharts to visualize organizational data and user engagement.
+- **Enterprise Security Flows:** Dedicated business-to-business login schemas that bypass consumer social logins.
+
+## 🛠️ How It Is Built
+### Tech Stack
+- **Framework:** [Next.js 16](https://nextjs.org/) (App Router)
+- **Library:** React 19
+- **Styling:** [Tailwind CSS v4](https://tailwindcss.com/)
+- **Data Visualization:** Recharts
 - **Language:** TypeScript
-- **Bundler:** Turbopack (for local development speed)
 
-## 📋 Prerequisites
+### Prerequisites
+- [Node.js](https://nodejs.org/) (v20+ recommended)
+- A running instance of the `backend-mern` API.
 
-Before you begin, ensure you have met the following requirements:
-* **Node.js** (v18 or higher) installed.
-* **npm** or **yarn** installed.
+### Getting Started
 
-## 🛠️ Getting Started
+1. **Install Dependencies**
+   Navigate to the root of this folder and install the required npm packages:
+   ```bash
+   npm install
+   ```
 
-Follow these steps to set up the web frontend locally:
+2. **Environment Configuration**
+   Create a `.env.local` file in the root directory to point to your local backend API. Ensure this runs on a different port than the public web if developing simultaneously!
+   ```env
+   PORT=3002
+   NEXT_PUBLIC_API_URL=http://localhost:3001/api
+   ```
 
-### 1. Install Dependencies
+3. **Start the Development Server**
+   Run the Next.js development server:
+   ```bash
+   npm run dev
+   ```
+   *The application will start locally at `http://localhost:3002`.*
 
-Install the required Node.js packages:
-```bash
-npm install
-```
-
-### 2. Environment Setup
-
-Create a local environment file (`.env.local`) based on the project requirements to securely store your API keys and configuration variables:
-```bash
-# Example .env.local variables
-NEXT_PUBLIC_API_URL=http://localhost:8080/api/v1
-# Add any required secret keys (e.g. SPORTSRC_V2_KEY)
-```
-*Never commit `.env.local` to the repository.*
-
-### 3. Run the Development Server
-
-Start the local development server with Turbopack for ultra-fast compilation:
-```bash
-npm run dev
-```
-Open [http://localhost:3000](http://localhost:3000) in your browser to see the application.
-
-## 📁 Repository Structure
-
-* `src/app/` - Contains the Next.js App Router pages and API routes.
-* `src/components/` - Contains reusable React UI components.
-* `src/context/` - Contains React context providers (e.g., AuthContext).
-* `public/` - Contains static assets like images and icons.
-
-## 📦 Building for Production
-
-To create an optimized production build, run:
-```bash
-npm run build
-npm start
-```
-
-## 🤝 Contributing
-
-When contributing, please follow the established code style, ensure there are no TypeScript errors (`npm run build` will catch these), and submit a Pull Request.
+### Available Scripts
+- `npm run dev`: Starts the local development server.
+- `npm run build`: Compiles an optimized production build.
+- `npm run start`: Starts the application in production mode.
+- `npm run lint`: Runs ESLint to catch syntax and styling errors.
