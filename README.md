@@ -1,15 +1,30 @@
 # ResultHub Business & Admin Web
 
-This repository contains the enterprise-facing application strictly reserved for ResultHub Organizations and internal Super Admins.
+## 🌍 Complete Project Overview
+**ResultHub** is a comprehensive, multi-platform social and organizational ecosystem designed to bridge the gap between institutions, data, and the community. It allows organizations (like sports leagues, educational institutions, or event organizers) to securely upload and manage complex datasets. Simultaneously, it provides end-users with an engaging, modern social network to view these results, interact with posts, customize their profiles, and stay connected with real-time feeds.
 
-## 🎯 Purpose
-The Business Web platform completely separates enterprise workloads from consumer workloads. It provides high-security dashboards where organizations can manage their internal structures, upload datasets, and monitor analytics. It also houses the `superadmin` portal for internal system moderation.
+The platform is decoupled into four codebases:
+1. **Backend API**
+2. **Public Web** (User-facing social network)
+3. **Business Web (This repository)**
+4. **Mobile App** (Flagship Flutter app)
+
+---
+
+## 🎯 Purpose of This Repository
+The Business Web platform completely separates enterprise workloads from consumer workloads. It is a highly-secure, restricted dashboard designed exclusively for ResultHub Organizations (to manage data) and internal Super Admins (to moderate the platform). Standard users cannot log into this platform.
+
+## 🔌 How It Integrates with the Backend
+Like all frontends in the ecosystem, this application is completely stateless and depends heavily on the `backend-mern` Node.js API:
+
+1. **Enterprise Authentication:** The login forms here hit entirely different backend routes (e.g., `/api/organization/login` or `/api/superadmin/login`). The backend verifies that the account has elevated privileges before issuing an enterprise JWT token.
+2. **Heavy Data Uploads:** When an organization uploads a massive CSV of results, this frontend packages the file using standard HTML `<input type="file">` and `FormData`, and posts it to the backend using `multipart/form-data`. The backend's Multer middleware catches the file, parses the CSV, and bulk-inserts the rows into MongoDB.
+3. **Data Visualization:** The Recharts analytics components in this repo actively poll the backend's `/api/analytics` endpoints to receive aggregated metric JSON arrays, which are then painted as graphs.
 
 ## 📦 What It Has
 - **Organization Dashboards:** Complex UI flows for organization data management and CSV imports.
 - **Super Admin Moderation:** Tools for handling user complaints, reviewing flagged posts, and managing platform-wide settings.
-- **Analytics & Reporting:** Built-in charts and graphs using Recharts to visualize organizational data and user engagement.
-- **Enterprise Security Flows:** Dedicated business-to-business login schemas that bypass consumer social logins.
+- **Analytics & Reporting:** Built-in charts and graphs using Recharts.
 
 ## 🛠️ How It Is Built
 ### Tech Stack
@@ -17,7 +32,6 @@ The Business Web platform completely separates enterprise workloads from consume
 - **Library:** React 19
 - **Styling:** [Tailwind CSS v4](https://tailwindcss.com/)
 - **Data Visualization:** Recharts
-- **Language:** TypeScript
 
 ### Prerequisites
 - [Node.js](https://nodejs.org/) (v20+ recommended)
@@ -26,27 +40,18 @@ The Business Web platform completely separates enterprise workloads from consume
 ### Getting Started
 
 1. **Install Dependencies**
-   Navigate to the root of this folder and install the required npm packages:
    ```bash
    npm install
    ```
 
 2. **Environment Configuration**
-   Create a `.env.local` file in the root directory to point to your local backend API. Ensure this runs on a different port than the public web if developing simultaneously!
+   Ensure this runs on a different port than the public web if developing simultaneously!
    ```env
    PORT=3002
    NEXT_PUBLIC_API_URL=http://localhost:3001/api
    ```
 
-3. **Start the Development Server**
-   Run the Next.js development server:
+3. **Start the Server**
    ```bash
    npm run dev
    ```
-   *The application will start locally at `http://localhost:3002`.*
-
-### Available Scripts
-- `npm run dev`: Starts the local development server.
-- `npm run build`: Compiles an optimized production build.
-- `npm run start`: Starts the application in production mode.
-- `npm run lint`: Runs ESLint to catch syntax and styling errors.
