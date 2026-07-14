@@ -14,12 +14,13 @@ export default function NotificationsRightSidebar({ className = "" }: { classNam
 
   useEffect(() => {
     let wsUrl = 'ws://localhost:8080/ws/live';
-    try {
-      const url = new URL(API_BASE_URL);
-      const protocol = url.protocol === 'https:' ? 'wss:' : 'ws:';
-      wsUrl = `${protocol}//${url.host}/ws/live`;
-    } catch (e) {
-      console.error("Failed to construct WS URL, using fallback", e);
+    if (API_BASE_URL) {
+      try {
+        const url = new URL(API_BASE_URL);
+        wsUrl = `${url.protocol === 'https:' ? 'wss:' : 'ws:'}//${url.host}/ws/live`;
+      } catch (e) {
+        console.error("Failed to construct WS URL, using fallback", e);
+      }
     }
 
     const ws = new WebSocket(wsUrl);
