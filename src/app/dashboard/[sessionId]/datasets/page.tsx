@@ -43,9 +43,11 @@ export default function DatasetsPage() {
       
       const mapped = (res.content || []).map((d: any) => {
         // Generate pseudo-random but consistent stats based on ID string
-        const idHash = d.id.split('').reduce((a: number, b: string) => a + b.charCodeAt(0), 0);
+        const rawId = d.id || d._id || `temp-${Date.now()}`;
+        const idString = String(rawId);
+        const idHash = idString.split('').reduce((a: number, b: string) => a + b.charCodeAt(0), 0);
         return {
-          id: d.id,
+          id: idString,
           name: d.name,
           category: d.domainType || "Generic",
           visibility: "Public", 

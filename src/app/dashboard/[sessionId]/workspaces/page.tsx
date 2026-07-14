@@ -50,11 +50,13 @@ export default function WorkspacesPage() {
           const storageUsed = ws.storageUsed || 0.0;
           
           // Generate pseudo-random consistent metrics based on ID for visual fluff
-          const idHash = ws.id.split('').reduce((a: number, b: string) => a + b.charCodeAt(0), 0);
+          const rawId = ws.id || ws._id || `temp-${Date.now()}`;
+          const idString = String(rawId);
+          const idHash = idString.split('').reduce((a: number, b: string) => a + b.charCodeAt(0), 0);
           const isBrandNew = datasetsCount === 0 && ageInDays < 1;
           
           return {
-            id: ws.id,
+            id: idString,
             name: ws.name,
             slug: ws.slug,
             description: ws.description || "No description provided.",

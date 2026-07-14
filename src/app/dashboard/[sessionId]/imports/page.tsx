@@ -25,7 +25,7 @@ export default function CSVImportCenter() {
       const res = await api.imports.getWorkspaceImports(activeWorkspace.id, 0, 50);
       if (res.content) {
         const mapped = res.content.map((job: any) => ({
-          id: job.id,
+          id: job.id || job._id || `job-${Date.now()}-${Math.random()}`,
           filename: job.filename,
           datasetName: job.datasetName || "Unknown Dataset",
           size: "Uploaded",
@@ -57,7 +57,13 @@ export default function CSVImportCenter() {
   useEffect(() => {
     if (activeWorkspace?.id) {
       api.datasets.getByWorkspace(activeWorkspace.id, 0, 100)
-        .then(res => setDatasets(res.content || []))
+        .then(res => {
+          const mappedDatasets = (res.content || []).map((d: any) => ({
+            ...d,
+            id: d.id || d._id
+          }));
+          setDatasets(mappedDatasets);
+        })
         .catch(console.error);
     }
   }, [activeWorkspace]);

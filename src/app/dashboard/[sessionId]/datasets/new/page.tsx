@@ -151,7 +151,8 @@ export default function DatasetBuilderPage() {
       };
 
       // Send the JSON Schema to the schema endpoint
-      await api.datasets.updateSchema(dataset.id, {
+      const targetId = dataset.id || dataset._id;
+      await api.datasets.updateSchema(targetId, {
         schemaName: name + " Schema",
         schemaDefinition: schemaDefinition,
         isRequired: true

@@ -1,4 +1,4 @@
-export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:3001/api/v1';
+export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8080/api/v1';
 
 // Token Management
 export const getAuthToken = () => {
@@ -231,7 +231,7 @@ export const api = {
     getByWorkspace: (workspaceId: string, page = 0, size = 10) => 
       fetchWithAuth(`/workspaces/${workspaceId}/datasets?page=${page}&size=${size}`),
     create: (workspaceId: string, data: any) => 
-      fetchWithAuth(`/workspaces/${workspaceId}/datasets`, { method: 'POST', body: JSON.stringify(data) }),
+      fetchWithAuth(`/datasets`, { method: 'POST', body: JSON.stringify({ ...data, workspaceId }) }),
     getPublic: (domainType?: string) => 
       fetchWithAuth(`/datasets${domainType ? `?domainType=${domainType}` : ''}`),
     getRecords: (datasetId: string, page = 0, size = 10) =>
@@ -253,9 +253,9 @@ export const api = {
     archive: (datasetId: string) =>
       fetchWithAuth(`/datasets/${datasetId}/archive`, { method: 'POST' }),
     updateSchema: (datasetId: string, data: any) =>
-      fetchWithAuth(`/datasets/${datasetId}/schema`, { method: 'PUT', body: JSON.stringify(data) }),
+      fetchWithAuth(`/datasets/${datasetId}`, { method: 'PUT', body: JSON.stringify({ schemaDefinition: data }) }),
     getSchema: (datasetId: string) =>
-      fetchWithAuth(`/datasets/${datasetId}/schema`)
+      fetchWithAuth(`/datasets/${datasetId}`).then((res: any) => res.schemaDefinition)
   },
 
   // Imports

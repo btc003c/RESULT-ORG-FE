@@ -49,7 +49,7 @@ export default function DatasetRecordsPage({ params }: PageProps) {
           
           const dynamicRows = fetchedRecords.map((r: any, idx: number) => ({
             id: `row-${idx}`,
-            originalId: r.id,
+            originalId: r.id || r._id,
             cells: r.dataPayload || {}
           }));
           setRows(dynamicRows);
@@ -182,7 +182,7 @@ export default function DatasetRecordsPage({ params }: PageProps) {
       const fetchedRecords = response.content || [];
       const dynamicRows = fetchedRecords.map((r: any, idx: number) => ({
         id: `row-${idx}`,
-        originalId: r.id,
+        originalId: r.id || r._id,
         cells: r.dataPayload || {}
       }));
       setRows(dynamicRows);
