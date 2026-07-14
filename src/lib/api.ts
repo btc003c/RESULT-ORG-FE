@@ -42,10 +42,18 @@ export async function fetchWithAuth(endpoint: string, options: RequestInit = {})
     headers.set('Authorization', `Bearer ${token}`);
   }
 
-  let response = await fetch(`${API_BASE_URL}${endpoint}`, {
-    ...options,
-    headers,
-  });
+  let response: Response;
+  try {
+    response = await fetch(`${API_BASE_URL}${endpoint}`, {
+      ...options,
+      headers,
+    });
+  } catch (err: any) {
+    if (err.name === 'TypeError' && err.message === 'Failed to fetch') {
+      throw new Error("Network Error: Backend unreachable, CORS blocked, Invalid API URL, or Mixed Content (HTTP from HTTPS).");
+    }
+    throw new Error(err.message || "Request failed");
+  }
 
   if (!response.ok) {
     if (response.status === 401) {
@@ -106,12 +114,20 @@ export async function fetchWithAuthMultipart(endpoint: string, formData: FormDat
   // NOTE: Do not set Content-Type for FormData, the browser will automatically set it 
   // with the correct boundary parameter.
   
-  let response = await fetch(`${API_BASE_URL}${endpoint}`, {
-    ...options,
-    method: 'POST',
-    body: formData,
-    headers,
-  });
+  let response: Response;
+  try {
+    response = await fetch(`${API_BASE_URL}${endpoint}`, {
+      ...options,
+      method: 'POST',
+      body: formData,
+      headers,
+    });
+  } catch (err: any) {
+    if (err.name === 'TypeError' && err.message === 'Failed to fetch') {
+      throw new Error("Network Error: Backend unreachable, CORS blocked, Invalid API URL, or Mixed Content (HTTP from HTTPS).");
+    }
+    throw new Error(err.message || "Request failed");
+  }
 
   if (!response.ok) {
     if (response.status === 401) {
