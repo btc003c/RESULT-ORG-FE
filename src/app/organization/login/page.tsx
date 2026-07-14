@@ -25,8 +25,14 @@ export default function OrganizationLoginPage() {
     setError("");
     setIsLoading(true);
 
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setError("Please enter a valid email format.");
+      return;
+    }
+
     try {
-      const response = await api.auth.login({ email, password });
+      const response = await api.auth.orgLogin({ email, password });
 
       if (rememberMe) {
         localStorage.setItem("rh_org_remembered_email", email);
@@ -39,9 +45,10 @@ export default function OrganizationLoginPage() {
 
         if (typeof window !== "undefined") {
           localStorage.setItem("rh_user", JSON.stringify({
-            id: response.userId,
-            email: response.email,
-            role: response.role,
+            id: response.user?.id,
+            email: response.user?.email,
+            name: response.user?.name,
+            role: response.user?.role,
             requiresMfa: response.requiresMfa,
           }));
         }
@@ -51,12 +58,11 @@ export default function OrganizationLoginPage() {
           return;
         }
 
-        // Role-based routing
-        const role = response.role;
-        if (role === "ADMIN") {
+        // Role-based routing (Backend guarantees this is an ORGANIZATION)
+        const role = response.user?.role;
+        if (role === "ADMIN" || role === "SUPER_ADMIN") {
           router.push("/superadmin");
         } else if (role === "USER") {
-          // Standard users don't belong here — send them home
           router.push("/");
         } else {
           // ORGANIZATION — org dashboard
@@ -68,7 +74,11 @@ export default function OrganizationLoginPage() {
         setError("Invalid response from server. Missing token.");
       }
     } catch (err: any) {
-      setError(err.message || "Failed to authenticate. Please check your credentials.");
+      if (err.message?.includes("API Error: 500")) {
+        setError("Server error. Please try again later.");
+      } else {
+        setError(err.message || "Failed to authenticate. Please check your credentials.");
+      }
     } finally {
       setIsLoading(false);
     }

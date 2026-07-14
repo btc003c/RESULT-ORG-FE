@@ -1,4 +1,4 @@
-export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8080/api/v1';
+export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:3001/api/v1';
 
 // Token Management
 export const getAuthToken = () => {
@@ -167,6 +167,16 @@ export const api = {
     me: () => fetchWithAuth('/users/me'),
     login: (data: any) => 
       fetchWithAuth('/auth/login', {
+        method: 'POST',
+        body: JSON.stringify(data)
+      }),
+    orgLogin: (data: any) => 
+      fetchWithAuth('/auth/organization/login', {
+        method: 'POST',
+        body: JSON.stringify(data)
+      }),
+    orgRegister: (data: any) => 
+      fetchWithAuth('/auth/organization/register', {
         method: 'POST',
         body: JSON.stringify(data)
       }),
