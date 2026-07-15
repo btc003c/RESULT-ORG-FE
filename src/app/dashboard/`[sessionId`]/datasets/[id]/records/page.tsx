@@ -3,9 +3,9 @@
 import { useState, use, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { 
-  ArrowLeft, Plus, Download, Undo2, Redo2, Filter, 
-  ArrowUpDown, LayoutGrid, Eye, EyeOff, Save, Trash2, 
+import {
+  ArrowLeft, Plus, Download, Undo2, Redo2, Filter,
+  ArrowUpDown, LayoutGrid, Eye, EyeOff, Save, Trash2,
   X, Check, Lock, Globe, FileSpreadsheet, Search, Info, HelpCircle
 } from "lucide-react";
 
@@ -33,7 +33,7 @@ export default function DatasetRecordsPage({ params }: PageProps) {
       try {
         const response = await api.datasets.getRecords(datasetId);
         const fetchedRecords = response.content || [];
-        
+
         if (fetchedRecords.length > 0) {
           // Extract columns from the first record's dataPayload
           const firstPayload = fetchedRecords[0].dataPayload || {};
@@ -44,7 +44,7 @@ export default function DatasetRecordsPage({ params }: PageProps) {
             width: 150
           }));
           setColumns(dynamicColumns);
-          
+
           const dynamicRows = fetchedRecords.map((r: any, idx: number) => ({
             id: `row-${idx}`,
             originalId: r.id,
@@ -56,8 +56,8 @@ export default function DatasetRecordsPage({ params }: PageProps) {
         } else {
           // Empty dataset fallback
           setColumns([
-             { id: "col-1", name: "Column 1", type: "Text", width: 150 },
-             { id: "col-2", name: "Column 2", type: "Text", width: 150 }
+            { id: "col-1", name: "Column 1", type: "Text", width: 150 },
+            { id: "col-2", name: "Column 2", type: "Text", width: 150 }
           ]);
           setRows([]);
         }
@@ -110,7 +110,7 @@ export default function DatasetRecordsPage({ params }: PageProps) {
     const newColId = `col-${Date.now()}`;
     const newCol = { id: newColId, name: `New Column ${columns.length + 1}`, type: "Text", width: 150 };
     setColumns([...columns, newCol]);
-    
+
     const updatedRows = rows.map(r => ({
       ...r,
       cells: { ...r.cells, [newColId]: "" }
@@ -135,14 +135,14 @@ export default function DatasetRecordsPage({ params }: PageProps) {
   };
 
   const filteredRows = rows.filter(r => {
-    return Object.values(r.cells).some(val => 
+    return Object.values(r.cells).some(val =>
       String(val).toLowerCase().includes(searchQuery.toLowerCase())
     );
   });
 
   return (
     <div className="space-y-6 font-sans pb-16">
-      
+
       {/* 1. BREADCRUMBS & HEADER */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-zinc-200/60 pb-6">
         <div>
@@ -174,16 +174,16 @@ export default function DatasetRecordsPage({ params }: PageProps) {
 
       {/* 2. SPREADSHEET TOOLBAR */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 bg-white border border-zinc-200/80 p-3 rounded-2xl shadow-sm">
-        
+
         {/* Operations */}
         <div className="flex flex-wrap items-center gap-2">
-          <button 
+          <button
             onClick={handleAddRow}
             className="flex items-center gap-1.5 px-3.5 py-2 hover:bg-zinc-50 rounded-xl text-zinc-700 font-semibold text-xs border border-zinc-200 shadow-sm transition-colors"
           >
             <Plus size={14} /> Add Row
           </button>
-          <button 
+          <button
             onClick={handleAddColumn}
             className="flex items-center gap-1.5 px-3.5 py-2 hover:bg-zinc-50 rounded-xl text-zinc-700 font-semibold text-xs border border-zinc-200 shadow-sm transition-colors"
           >
@@ -198,8 +198,8 @@ export default function DatasetRecordsPage({ params }: PageProps) {
         <div className="flex items-center justify-between sm:justify-end gap-4">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400" size={14} />
-            <input 
-              type="text" 
+            <input
+              type="text"
               placeholder="Query cells..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -208,7 +208,7 @@ export default function DatasetRecordsPage({ params }: PageProps) {
           </div>
 
           <div className="flex items-center bg-zinc-100 p-0.5 rounded-lg">
-            <button 
+            <button
               onClick={handleUndo}
               disabled={historyIndex < 0}
               className="p-1.5 text-zinc-600 hover:text-zinc-950 disabled:opacity-30 disabled:hover:text-zinc-600 transition-colors"
@@ -216,7 +216,7 @@ export default function DatasetRecordsPage({ params }: PageProps) {
             >
               <Undo2 size={16} />
             </button>
-            <button 
+            <button
               onClick={handleRedo}
               disabled={historyIndex >= history.length - 1}
               className="p-1.5 text-zinc-600 hover:text-zinc-950 disabled:opacity-30 disabled:hover:text-zinc-600 transition-colors"
@@ -237,8 +237,8 @@ export default function DatasetRecordsPage({ params }: PageProps) {
               <tr className="border-b border-zinc-200 bg-zinc-50 text-zinc-500 font-extrabold uppercase tracking-wide">
                 <th className="px-4 py-3.5 border-r border-zinc-200 w-12 text-center">#</th>
                 {columns.map(col => (
-                  <th 
-                    key={col.id} 
+                  <th
+                    key={col.id}
                     style={{ width: col.width }}
                     className="px-4 py-3.5 border-r border-zinc-200 font-bold"
                   >
@@ -253,7 +253,7 @@ export default function DatasetRecordsPage({ params }: PageProps) {
             <tbody>
               {filteredRows.map((row, idx) => (
                 <tr key={row.id} className="border-b border-zinc-100 hover:bg-zinc-50/30 group">
-                  
+
                   {/* Index / Checkbox cell */}
                   <td className="px-4 py-2.5 border-r border-zinc-200 bg-zinc-50/50 text-center font-bold text-zinc-400 cursor-pointer" onClick={() => setSelectedRow(row)}>
                     {idx + 1}
@@ -264,15 +264,14 @@ export default function DatasetRecordsPage({ params }: PageProps) {
                     const cellValue = row.cells[col.id];
                     const isEditing = editingCell?.rowId === row.id && editingCell?.colId === col.id;
                     return (
-                      <td 
+                      <td
                         key={col.id}
                         onDoubleClick={() => setEditingCell({ rowId: row.id, colId: col.id })}
-                        className={`px-4 py-2 border-r border-zinc-100 transition-all font-medium text-zinc-800 relative cursor-text ${
-                          isEditing ? "bg-indigo-50/10 ring-2 ring-indigo-500/20" : ""
-                        }`}
+                        className={`px-4 py-2 border-r border-zinc-100 transition-all font-medium text-zinc-800 relative cursor-text ${isEditing ? "bg-indigo-50/10 ring-2 ring-indigo-500/20" : ""
+                          }`}
                       >
                         {isEditing ? (
-                          <input 
+                          <input
                             autoFocus
                             type={col.type === "Number" ? "number" : "text"}
                             value={cellValue}
@@ -282,11 +281,10 @@ export default function DatasetRecordsPage({ params }: PageProps) {
                             className="absolute inset-0 w-full h-full px-4 border-none bg-white font-semibold text-xs outline-none text-zinc-950"
                           />
                         ) : col.type === "Select" ? (
-                          <span className={`inline-flex px-2 py-0.5 rounded-full font-bold text-[10px] ${
-                            cellValue === "Eligible" ? "bg-emerald-50 text-emerald-600 border border-emerald-100" :
-                            cellValue === "Ineligible" ? "bg-rose-50 text-rose-600 border border-rose-100" :
-                            "bg-amber-50 text-amber-600 border border-amber-100"
-                          }`}>
+                          <span className={`inline-flex px-2 py-0.5 rounded-full font-bold text-[10px] ${cellValue === "Eligible" ? "bg-emerald-50 text-emerald-600 border border-emerald-100" :
+                              cellValue === "Ineligible" ? "bg-rose-50 text-rose-600 border border-rose-100" :
+                                "bg-amber-50 text-amber-600 border border-amber-100"
+                            }`}>
                             {String(cellValue)}
                           </span>
                         ) : (
@@ -307,14 +305,14 @@ export default function DatasetRecordsPage({ params }: PageProps) {
       <AnimatePresence>
         {selectedRow && (
           <>
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setSelectedRow(null)}
               className="fixed inset-0 bg-zinc-950/40 backdrop-blur-sm z-50"
             />
-            <motion.div 
+            <motion.div
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
@@ -324,18 +322,18 @@ export default function DatasetRecordsPage({ params }: PageProps) {
               {/* Header */}
               <div className="p-6 border-b border-zinc-100 flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-primary/10 text-primary rounded-xl flex items-center justify-center"><FileSpreadsheet size={20}/></div>
+                  <div className="w-10 h-10 bg-primary/10 text-primary rounded-xl flex items-center justify-center"><FileSpreadsheet size={20} /></div>
                   <div>
                     <h3 className="text-lg font-bold">Row Inspection</h3>
                     <p className="text-zinc-400 text-xs mt-0.5">Inspecting row ID: {selectedRow.id}</p>
                   </div>
                 </div>
-                <button onClick={() => setSelectedRow(null)} className="p-2 text-zinc-400 hover:text-zinc-900 bg-zinc-50 rounded-lg"><X size={20}/></button>
+                <button onClick={() => setSelectedRow(null)} className="p-2 text-zinc-400 hover:text-zinc-900 bg-zinc-50 rounded-lg"><X size={20} /></button>
               </div>
 
               {/* Body */}
               <div className="flex-1 overflow-y-auto p-6 space-y-6">
-                
+
                 {/* Inputs generated dynamically */}
                 <div className="space-y-4">
                   <h4 className="text-xs font-black uppercase text-zinc-400 tracking-wider">Field Record Details</h4>

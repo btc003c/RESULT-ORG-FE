@@ -502,7 +502,7 @@ export default function DatasetsPage() {
                         <td className="px-6 py-4 text-zinc-500 font-medium">{ds.owner}</td>
                         <td className="px-6 py-4 text-right">
                           <div className="flex items-center justify-end gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <Link href={`/dashboard/${params.sessionId}/datasets/${ds.id}/records`} title="Preview" className="p-1.5 hover:bg-zinc-100 text-zinc-500 hover:text-zinc-900 rounded-lg"><Eye size={16} /></Link>
+                            <Link href={`/dashboard/${params.sessionId}/datasets/${ds.id || ds._id}/records`} title="Preview" className="p-1.5 hover:bg-zinc-100 text-zinc-500 hover:text-zinc-900 rounded-lg"><Eye size={16} /></Link>
                             <button title="Download" className="p-1.5 hover:bg-zinc-100 text-zinc-500 hover:text-zinc-900 rounded-lg"><Download size={16} /></button>
                             <button title="Settings" className="p-1.5 hover:bg-zinc-100 text-zinc-500 hover:text-zinc-900 rounded-lg"><SlidersHorizontal size={16} /></button>
                             <button title="Delete" onClick={async () => { await api.datasets.delete(ds.id).catch(console.error); fetchDatasets(); }} className="p-1.5 hover:bg-red-50 text-zinc-400 hover:text-red-600 rounded-lg"><Trash2 size={16} /></button>
@@ -669,7 +669,7 @@ export default function DatasetsPage() {
                   {datasets.map(ds => (
                     <Link 
                       key={ds.id} 
-                      href={`/dashboard/${params.sessionId}/datasets/${ds.id}/records`}
+                      href={`/dashboard/${params.sessionId}/datasets/${ds.id || ds._id}/records`}
                       className="p-3 border border-zinc-200 rounded-xl hover:border-indigo-500 hover:bg-indigo-50/50 transition-colors flex items-center justify-between group"
                     >
                       <span className="font-semibold text-zinc-900 group-hover:text-indigo-600">{ds.name}</span>

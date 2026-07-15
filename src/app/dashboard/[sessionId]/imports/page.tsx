@@ -53,6 +53,7 @@ export default function CSVImportCenter() {
   const [uploadState, setUploadState] = useState<"idle" | "parsing" | "verifying" | "done" | "error">("idle");
   const [activeTab, setActiveTab] = useState<"queue" | "errors">("queue");
   const [errorMessage, setErrorMessage] = useState("");
+  const [ingestStats, setIngestStats] = useState({ imported: 0, failed: 0 });
 
   useEffect(() => {
     if (activeWorkspace?.id) {
@@ -89,6 +90,12 @@ export default function CSVImportCenter() {
       formData.append("file", selectedFile.file);
 
       const response = await api.datasets.uploadCsv(selectedDatasetId, formData);
+      
+      setIngestStats({ 
+        imported: response.importedCount || 0, 
+        failed: response.failedCount || 0 
+      });
+
       setUploadProgress(100);
       setUploadState("done");
       
@@ -231,12 +238,12 @@ export default function CSVImportCenter() {
             <div className="grid grid-cols-2 gap-4 text-center">
               <div className="bg-zinc-50 border border-zinc-200/40 p-4 rounded-2xl">
                 <span className="text-[10px] font-black uppercase tracking-wider text-zinc-400">Errors Flagged</span>
-                <span className="text-2xl font-black block text-rose-600 mt-1">4</span>
+                <span className="text-2xl font-black block text-rose-600 mt-1">{ingestStats.failed}</span>
                 <span className="text-[10px] text-zinc-500 font-medium block mt-0.5">Line validations</span>
               </div>
               <div className="bg-zinc-50 border border-zinc-200/40 p-4 rounded-2xl">
                 <span className="text-[10px] font-black uppercase tracking-wider text-zinc-400">Total Ingested</span>
-                <span className="text-2xl font-black block text-emerald-600 mt-1">42.3k</span>
+                <span className="text-2xl font-black block text-emerald-600 mt-1">{ingestStats.imported}</span>
                 <span className="text-[10px] text-zinc-500 font-medium block mt-0.5">Rows live today</span>
               </div>
             </div>

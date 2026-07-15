@@ -448,7 +448,7 @@ export default function DatasetsPage() {
                         <td className="px-6 py-4 text-zinc-500 font-medium">{ds.owner}</td>
                         <td className="px-6 py-4 text-right">
                           <div className="flex items-center justify-end gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <button title="Preview" className="p-1.5 hover:bg-zinc-100 text-zinc-500 hover:text-zinc-900 rounded-lg"><Eye size={16} /></button>
+                            <Link href={`/dashboard/${params.sessionId}/datasets/${ds.id || ds._id}/records`} title="Preview" className="p-1.5 hover:bg-zinc-100 text-zinc-500 hover:text-zinc-900 rounded-lg"><Eye size={16} /></Link>
                             <button title="Download" className="p-1.5 hover:bg-zinc-100 text-zinc-500 hover:text-zinc-900 rounded-lg"><Download size={16} /></button>
                             <button title="Delete" onClick={() => setDatasets(datasets.filter(item => item.id !== ds.id))} className="p-1.5 hover:bg-red-50 text-zinc-400 hover:text-red-600 rounded-lg"><Trash2 size={16} /></button>
                           </div>

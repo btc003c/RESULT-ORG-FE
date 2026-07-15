@@ -19,8 +19,21 @@ const WorkspaceContext = createContext<WorkspaceContextType>({
 
 export const WorkspaceProvider = ({ children }: { children: React.ReactNode }) => {
   const [workspaces, setWorkspaces] = useState<any[]>([]);
-  const [activeWorkspace, setActiveWorkspace] = useState<any>(null);
+  const [activeWorkspace, setActiveWorkspaceState] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
+
+  // Custom setter to also persist to localStorage
+  const setActiveWorkspace = (workspace: any) => {
+    setActiveWorkspaceState(workspace);
+    if (typeof window !== 'undefined' && workspace) {
+      const id = workspace.id || workspace._id;
+      if (id) {
+        localStorage.setItem('rh_active_workspace_id', id);
+      }
+    } else if (typeof window !== 'undefined' && !workspace) {
+      localStorage.removeItem('rh_active_workspace_id');
+    }
+  };
 
   useEffect(() => {
     const token = getAuthToken();
@@ -33,9 +46,20 @@ export const WorkspaceProvider = ({ children }: { children: React.ReactNode }) =
       try {
         const response = await api.workspaces.getMyWorkspaces(0, 50);
         if (response.content) {
-          setWorkspaces(response.content);
-          if (response.content.length > 0) {
-            setActiveWorkspace(response.content[0]);
+          const loadedWorkspaces = response.content.map((ws: any) => ({
+            ...ws,
+            id: ws.id || ws._id
+          }));
+          setWorkspaces(loadedWorkspaces);
+          
+          if (loadedWorkspaces.length > 0) {
+            const savedId = typeof window !== 'undefined' ? localStorage.getItem('rh_active_workspace_id') : null;
+            if (savedId) {
+              const found = loadedWorkspaces.find((w: any) => (w.id || w._id) === savedId);
+              setActiveWorkspaceState(found || loadedWorkspaces[0]);
+            } else {
+              setActiveWorkspaceState(loadedWorkspaces[0]);
+            }
           }
         }
       } catch (err) {

@@ -139,7 +139,6 @@ function DashboardLayoutContent({ children, sessionId }: { children: React.React
         { label: "Workspaces", icon: FolderKanban, href: `/dashboard/${sessionId}/workspaces` },
         { label: "Datasets", icon: Database, href: `/dashboard/${sessionId}/datasets` },
         { label: "CSV Imports", icon: Upload, href: `/dashboard/${sessionId}/imports` },
-        { label: "Records", icon: FileText, href: `/dashboard/${sessionId}/records` },
       ]
     },
     {
@@ -512,7 +511,7 @@ function DashboardLayoutContent({ children, sessionId }: { children: React.React
                                 <div>
                                   <div className="px-3 py-2 text-[10px] font-black text-zinc-400 uppercase tracking-widest">Datasets</div>
                                   {searchResults.datasets.map((ds: any) => (
-                                    <Link key={ds.id} href={`/dashboard/${sessionId}/datasets/${ds.id}/records`} onClick={() => setIsSearchExpanded(false)} className="flex items-center gap-3 p-2.5 hover:bg-zinc-50 rounded-xl transition-colors group">
+                                    <Link key={ds.id || ds._id} href={`/dashboard/${sessionId}/datasets/${ds.id || ds._id}/records`} onClick={() => setIsSearchExpanded(false)} className="flex items-center gap-3 p-2.5 hover:bg-zinc-50 rounded-xl transition-colors group">
                                       <div className="w-9 h-9 rounded-xl bg-emerald-50 border border-emerald-100 text-emerald-500 flex items-center justify-center shrink-0">
                                         <Database size={18} className="group-hover:scale-110 transition-transform" />
                                       </div>

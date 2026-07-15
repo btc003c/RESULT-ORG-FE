@@ -95,17 +95,28 @@ export default function DatasetBuilderPage() {
   };
 
   const handlePublish = async () => {
-    if (!activeWorkspace?.id) {
+    console.log("Button Clicked");
+    console.log("handlePublish Started");
+    
+    const workspaceId = activeWorkspace?.id || activeWorkspace?._id;
+    console.log("Workspace ID:", workspaceId);
+    
+    if (!workspaceId) {
+      console.log("Early Return: Missing Workspace");
       setErrorMsg("Please select a valid workspace first.");
       return;
     }
+    
+    console.log("Dataset Name:", name);
     if (!name) {
+      console.log("Early Return: Missing Name");
       setErrorMsg("Dataset Name is required.");
       setCurrentStep(1);
       return;
     }
 
     // Map UI Category to DomainType Enum
+
     const categoryMap: any = {
       "Academic": "EDUCATION",
       "Healthcare": "HEALTHCARE",
@@ -118,12 +129,14 @@ export default function DatasetBuilderPage() {
     setErrorMsg("");
 
     try {
-      const dataset = await api.datasets.create(activeWorkspace.id, {
+      console.log("Creating Dataset");
+      const dataset = await api.datasets.create(workspaceId, {
         name: name,
         slug: name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, ''),
         description: desc,
         domainType: categoryMap[category] || "CUSTOM"
       });
+      console.log("Dataset created:", dataset);
       
       // Generate Schema JSON object (not string)
       const properties: Record<string, any> = {};
@@ -150,6 +163,7 @@ export default function DatasetBuilderPage() {
         required: requiredList,
       };
 
+      console.log("Updating Schema");
       // Send the JSON Schema to the schema endpoint
       const targetId = dataset.id || dataset._id;
       await api.datasets.updateSchema(targetId, {
@@ -158,6 +172,10 @@ export default function DatasetBuilderPage() {
         isRequired: true
       });
 
+      console.log("Publishing Dataset");
+      await api.datasets.publish(targetId);
+
+      console.log("Redirecting");
       router.push(`/dashboard/${params.sessionId}/datasets`);
     } catch (err: any) {
       console.error("Create Dataset Error:", err);
@@ -506,7 +524,10 @@ export default function DatasetBuilderPage() {
             <div className="flex items-center gap-4">
               {errorMsg && <span className="text-red-500 text-sm font-semibold">{errorMsg}</span>}
               <button
-                onClick={handlePublish}
+                onClick={() => {
+                  console.log("Button Clicked Inline");
+                  handlePublish();
+                }}
                 disabled={isSubmitting}
                 className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-2.5 rounded-xl text-sm font-bold shadow-md shadow-emerald-500/10 transition-all active:scale-95 select-none disabled:opacity-50"
               >
